@@ -26,9 +26,9 @@ constexpr auto demo5 = foo<"hello there">();
 -----------------
 
 ✅ C++23<br>
-✅ Fully supporting constexpr/consteval<br>
+✅ Fully supporting `constexpr`/`consteval`<br>
 ✅ Will throw on range errors when `LANGULUS_OPTION_SAFE_MODE` is defined<br>
-✅ Tested on Clang 19, GCC 14.2, ~~MSVC v143~~, Clang-CL 19
+✅ Tested on `Clang 19`, `GCC 14.2`, ~~`MSVC v143`~~, `Clang-CL 19`<br>
 
 > [!CAUTION]
 > Not supported on MSVC yet (as of 11.2025).
@@ -36,14 +36,13 @@ constexpr auto demo5 = foo<"hello there">();
 -----------------
 
 `literal_t` acts as both a single value, or string literal. You can use it as a template parameter.
-Similar implementation should be introduced in C++26 as [std::fixed_string](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p3094r0.html), supposedly...                              
+Similar implementation should be introduced in C++26 as [`std::fixed_string`](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p3094r0.html), supposedly...
                                                                        
 String literals of different sizes result in unique types, and thus can't often be used with ternary operators,
-so I've taken the liberty to allow for strings of the form `? "\0\0\0" : "alt"` - left `literal_t` has        
-`ArraySize == 4`, but `size() == 0`.
+so I've taken the liberty to allow for strings of the form `? "\0\0\0" : "alt"` - left `literal_t` has `ArraySize == 4`, but `size() == 0`.
 This also allows us to do some neat compile speed/memory optimizations by minimizing template 
 instantiation via CTAD.
-literal_t's template will always instantiate with `ArraySize` being a power-of-two, regardless of the string length.
+`literal_t`'s template will always instantiate with `ArraySize` being a power-of-two, regardless of the string's null-terminated length.
 
 -----------------
 
