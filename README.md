@@ -39,8 +39,8 @@ constexpr auto demo5 = foo<"hello there">();
 Similar implementation should be introduced in C++26 as [`std::fixed_string`](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p3094r0.html), supposedly...
                                                                        
 String literals of different sizes result in unique types, and thus can't often be used with ternary operators,
-so I've taken the liberty to allow for strings of the form `? "\0\0\0" : "alt"` - left `literal_t` has `ArraySize == 4`, but `size() == 0`.
-So you can do fun stuff at compile time, like, like:
+so I've taken the liberty to allow for strings of the form `? "\0\0\0" : "alt"` - left `literal_t` has `ArraySize == 4`, but `size() == 0`.<br>
+So you can do fun stuff at compile time, like:
 ```c++
 constexpr literal_t Name = same_as<int32_t, int> ? "i\0\0" : "i32";
 ```
