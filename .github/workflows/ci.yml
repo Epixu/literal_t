@@ -11,7 +11,7 @@ jobs:
       matrix:
         build: [debug, release]
         os:    [ubuntu-24.04, windows-latest]
-        cxx:   [g++-14, clang++-19, ClangCL, v143]
+        cxx:   [g++-14, clang++-19, ClangCL] #v143 disabled until MSVC catches up with the rest of the world
         arch:  [x86, x64]
 
         exclude:

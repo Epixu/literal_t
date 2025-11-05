@@ -1,7 +1,7 @@
 ### One template argument to rule them all!
 
-Are you tired of not being able to set template arguments to string literals?
-Are you tired of every possible workaround leading to tons of boilerplate and increased build times?
+Are you tired of not being able to set template arguments to string literals?<br>
+Are you tired of every possible workaround leading to tons of boilerplate and increased build times?<br>
 Well... today's your lucky day!
 
 #### Check this out:
@@ -28,12 +28,15 @@ constexpr auto demo5 = foo<"hello there">();
 ✅ C++23<br>
 ✅ Fully supporting constexpr/consteval<br>
 ✅ Will throw on range errors when `LANGULUS_OPTION_SAFE_MODE` is defined<br>
-✅ Tested on Clang 19, GCC 14.2, MSVC v143, Clang-CL 19
+✅ Tested on Clang 19, GCC 14.2, ~~MSVC v143~~, Clang-CL 19
 
+> [!CAUTION]
+> Not supported on MSVC yet (as of 11.2025).
+> They have a lot of catching up to do with C++23 in order for this to work properly on their compiler.
 -----------------
 
 `literal_t` acts as both a single value, or string literal. You can use it as a template parameter.
-The string implementation should be introduced in C++26 as std::fixed_string, supposedly...                              
+Similar implementation should be introduced in C++26 as [std::fixed_string](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p3094r0.html), supposedly...                              
                                                                        
 String literals of different sizes result in unique types, and thus can't often be used with ternary operators,
 so I've taken the liberty to allow for strings of the form `? "\0\0\0" : "alt"` - left `literal_t` has        
