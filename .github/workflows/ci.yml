@@ -1,0 +1,91 @@
+name: Langulus::pot_t CI
+on: push
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+  
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        build: [debug, release]
+        os:    [ubuntu-24.04, windows-latest]
+        cxx:   [g++-14, clang++-19, ClangCL, v143]
+        arch:  [x86, x64]
+
+        exclude:
+          - os:  ubuntu-24.04
+            cxx: v143
+          - os:  ubuntu-24.04
+            cxx: ClangCL
+          - os:  windows-latest
+            cxx: g++-14
+          - os:  windows-latest
+            cxx: clang++-19
+
+        include:
+          - cxx: g++-14
+            c: gcc-14
+          - cxx: clang++-19
+            c: clang-19
+          - os: ubuntu-24.04
+            arch: x86
+            cmake_args: "-DCMAKE_CXX_FLAGS=-m32"
+          - os: ubuntu-24.04
+            arch: x64
+            cmake_args: "-DCMAKE_CXX_FLAGS=-m64"
+          - os: windows-latest
+            arch: x86
+            cmake_args: "-G \"Visual Studio 17 2022\" -A Win32"
+          - os: windows-latest
+            arch: x64
+            cmake_args: "-G \"Visual Studio 17 2022\" -A x64"
+          - build: debug
+            debug_flags: "-DLANGULUS_OPTION_SAFE_MODE=ON"
+
+    name: "${{matrix.os}}-${{matrix.cxx}}-${{matrix.build}}-${{matrix.arch}}"
+    runs-on: ${{matrix.os}}
+    steps:
+      - name: Clone
+        uses: actions/checkout@v4
+
+      - if: matrix.os == 'ubuntu-24.04' && matrix.arch == 'x86'
+        name: Prepare Linux for cross-compilation
+        run: |
+          sudo apt update
+          sudo apt install g++-14-multilib
+
+      - if: matrix.cxx == 'clang++-19'
+        name: Installing Clang 19
+        run: |
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo apt-add-repository "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-19 main"
+          sudo apt update
+          sudo apt install clang-19
+
+      - if: matrix.os == 'ubuntu-24.04'
+        name: Configure (Linux)
+        run: >
+          mkdir build && cd build && cmake ..
+          -DCMAKE_C_COMPILER=${{matrix.c}}
+          -DCMAKE_CXX_COMPILER=${{matrix.cxx}}
+          ${{matrix.cmake_args}}
+          -DCMAKE_BUILD_TYPE=${{matrix.build}}
+          -DLANGULUS_OPTION_TESTING=ON
+          ${{matrix.debug_flags}}
+
+      - if: matrix.os == 'windows-latest'
+        name: Configure (Windows)
+        run: >
+          mkdir build && cd build && cmake ..
+          ${{matrix.cmake_args}} -T "${{matrix.cxx}}"
+          -DCMAKE_BUILD_TYPE=${{matrix.build}}
+          -DLANGULUS_OPTION_TESTING=ON
+          ${{matrix.debug_flags}}
+
+      - name: Build
+        run: cmake --build build -j4 --config ${{matrix.build}}
+
+      - name: Test
+        run: cd build && ctest -V -C ${{matrix.build}}

@@ -1,0 +1,304 @@
+﻿{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 28,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "installDir": "${sourceDir}/out/install/${presetName}",
+      "cacheVariables": { "LANGULUS_OPTION_TESTING": "ON" }
+    },
+
+    {
+      "name": "linux",
+      "description": "Target the Windows Subsystem for Linux (WSL) or a remote Linux system",
+      "inherits": "base",
+      "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "vendor": { "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": { "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}" } }
+    },
+    {
+      "name": "windows",
+      "description": "Target Windows",
+      "inherits": "base",
+      "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "macos",
+      "description": "Target a remote macOS system",
+      "inherits": "base",
+      "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "vendor": { "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": { "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}" } }
+    },
+
+    {
+      "name": "g++-14",
+      "description": "Target the GNU compiler (has to be at least 14)",
+      "inherits": "base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc-14",
+        "CMAKE_CXX_COMPILER": "g++-14",
+        "CMAKE_C_FLAGS": "-Wall -Wextra -fvisibility=hidden -fvisibility-inlines-hidden -Wno-trigraphs $env{BUILDTYPE_FLAGS} $env{ARCHITECTURE_FLAGS} $env{SIMD_FLAGS} -ftime-trace=\"compilation_time.json\"",
+        "CMAKE_CXX_FLAGS": "-Wall -Wextra -fvisibility=hidden -fvisibility-inlines-hidden -Wno-trigraphs $env{BUILDTYPE_FLAGS} $env{ARCHITECTURE_FLAGS} $env{SIMD_FLAGS} -ftime-trace=\"compilation_time.json\""
+      }
+    },
+    {
+      "name": "clang++-19",
+      "description": "Target Clang 19 compiler",
+      "inherits": "base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang-19",
+        "CMAKE_CXX_COMPILER": "clang++-19",
+        "CMAKE_C_FLAGS": "-Wall -Wextra -fvisibility=hidden -fvisibility-inlines-hidden -Wno-trigraphs $env{BUILDTYPE_FLAGS} $env{ARCHITECTURE_FLAGS} $env{SIMD_FLAGS} -ftime-trace=\"compilation_time.json\"",
+        "CMAKE_CXX_FLAGS": "-Wall -Wextra -fvisibility=hidden -fvisibility-inlines-hidden -Wno-trigraphs $env{BUILDTYPE_FLAGS} $env{ARCHITECTURE_FLAGS} $env{SIMD_FLAGS} -ftime-trace=\"compilation_time.json\""
+      }
+    },
+    {
+      "name": "cl-v143",
+      "description": "Target Visual C++ v143 compiler",
+      "inherits": "base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_C_FLAGS": "/utf-8 /W3 /bigobj /EHsc $env{BUILDTYPE_FLAGS_MSVC} $env{ARCHITECTURE_FLAGS_MSVC} $env{SIMD_FLAGS_MSVC}",
+        "CMAKE_CXX_FLAGS": "/utf-8 /W3 /bigobj /EHsc $env{BUILDTYPE_FLAGS_MSVC} $env{ARCHITECTURE_FLAGS_MSVC} $env{SIMD_FLAGS_MSVC}"
+      }
+    },
+    {
+      "name": "clang-cl-19",
+      "description": "Target Clang-Cl 19",
+      "inherits": "base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang-cl.exe",
+        "CMAKE_CXX_COMPILER": "clang-cl.exe",
+        "CMAKE_C_FLAGS": "/utf-8 /W3 /bigobj /EHsc -Wno-trigraphs $env{BUILDTYPE_FLAGS_MSVC} $env{ARCHITECTURE_FLAGS} $env{SIMD_FLAGS_MSVC} -ftime-trace=\"compilation_time.json\"",
+        "CMAKE_CXX_FLAGS": "/utf-8 /W3 /bigobj /EHsc -Wno-trigraphs $env{BUILDTYPE_FLAGS_MSVC} $env{ARCHITECTURE_FLAGS} $env{SIMD_FLAGS_MSVC} -ftime-trace=\"compilation_time.json\""
+      }
+    },
+
+    {
+      "name": "coverage",
+      "description": "Enables coverage",
+      "inherits": "base",
+      "hidden": true,
+      "cacheVariables": {
+        "LANGULUS_COVERAGE_COMPILER_FLAGS": "--coverage",
+        "LANGULUS_COVERAGE_LINKER_FLAGS": "",
+        "LANGULUS_COVERAGE_COMPILER_FLAGS_MSVC": "/Od --coverage",
+        "LANGULUS_COVERAGE_LINKER_FLAGS_MSVC": "--coverage clang_rt.profile-x86_64.lib"
+      }
+    },
+    
+    {
+      "name": "vendor-clang-cl-x86",
+      "description": "Enables vendor specific toolchains for clang-cl x86",
+      "inherits": "base",
+      "hidden": true,
+      "vendor": {
+        "jetbrains.com/clion": {
+          "toolchain": "ClangCL x86"
+        }
+      }
+    },
+    
+    {
+      "name": "vendor-clang-cl-x64",
+      "description": "Enables vendor specific toolchains for clang-cl x64",
+      "inherits": "base",
+      "hidden": true,
+      "vendor": {
+        "jetbrains.com/clion": {
+          "toolchain": "ClangCL x64"
+        }
+      }
+    },
+
+    {
+      "name": "vendor-clang-x86",
+      "description": "Enables vendor specific toolchains for clang x86",
+      "inherits": "base",
+      "hidden": true,
+      "vendor": {
+        "jetbrains.com/clion": {
+          "toolchain": "WSL Clang x86"
+        }
+      }
+    },
+    
+    {
+      "name": "vendor-clang-x64",
+      "description": "Enables vendor specific toolchains for clang x64",
+      "inherits": "base",
+      "hidden": true,
+      "vendor": {
+        "jetbrains.com/clion": {
+          "toolchain": "WSL Clang x64"
+        }
+      }
+    },
+    
+    {
+      "name": "x64",
+      "description": "Target x64 architecture",
+      "inherits": "base",
+      "hidden": true,
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "environment": {
+        "ARCHITECTURE_FLAGS": "-m64",
+        "ARCHITECTURE_FLAGS_MSVC": ""
+      }
+    },
+    {
+      "name": "x86",
+      "description": "Target x86 architecture",
+      "inherits": "base",
+      "hidden": true,
+      "architecture": {
+        "value": "x86",
+        "strategy": "external"
+      },
+      "environment": {
+        "ARCHITECTURE_FLAGS": "-m32",
+        "ARCHITECTURE_FLAGS_MSVC": ""
+      }
+    },
+
+    {
+      "name": "debug",
+      "description": "A debug build",
+      "inherits": "base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "LANGULUS_OPTION_SAFE_MODE": "ON",
+        "LANGULUS_OPTION_DEBUGGING": "ON",
+        "LANGULUS_OPTION_MEMORY_STATISTICS": "ON",
+        "LANGULUS_OPTION_PROFILING": "ON"
+      },
+      "environment": {
+        "BUILDTYPE_FLAGS": "",
+        "BUILDTYPE_FLAGS_MSVC": ""
+      }
+    },
+    {
+      "name": "release",
+      "description": "A release build",
+      "inherits": "base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "LANGULUS_OPTION_SAFE_MODE": "ON",
+        "LANGULUS_LOGGER_DISABLE_VERBOSE": "ON",
+        "LANGULUS_LOGGER_DISABLE_SPECIALS": "ON",
+        "LANGULUS_LOGGER_DISABLE_FLOWS": "ON",
+        "LANGULUS_LOGGER_DISABLE_INPUTS": "ON",
+        "LANGULUS_LOGGER_DISABLE_NETWORKS": "ON",
+        "LANGULUS_LOGGER_DISABLE_OS": "ON"
+      },
+      "environment": {
+        "BUILDTYPE_FLAGS": "-O2",
+        "BUILDTYPE_FLAGS_MSVC": "/O2"
+      }
+    },
+
+    {
+      "name": "linux-g++-x64-debug-safe",
+      "displayName": "Linux x64 G++ Debug Safe",
+      "description": "Target Linux with the 64bit GNU compiler (debug, safe)",
+      "inherits": [ "linux", "g++-14", "x64", "debug" ]
+    },
+    {
+      "name": "linux-clang-x64-debug-safe",
+      "displayName": "clang x64 Debug Safe",
+      "description": "Target Ubuntu with the 64bit Clang compiler (debug, safe)",
+      "inherits": [ "linux", "clang++-19", "x64", "debug", "vendor-clang-x64" ]
+    },
+    {
+      "name": "linux-clang-x64-debug-safe-coverage",
+      "displayName": "clang x64 Debug Safe Coverage",
+      "description": "Target Ubuntu with the 64bit Clang compiler (debug, safe)",
+      "inherits": [ "linux", "clang++-19", "x64", "debug", "coverage", "vendor-clang-x64" ]
+    },
+    {
+      "name": "windows-v143-x64-debug-safe",
+      "displayName": "v143 x64 Debug Safe",
+      "description": "Target Windows with the 64bit v143 compiler (debug, safe)",
+      "inherits": [ "windows", "cl-v143", "x64", "debug" ]
+    },
+    {
+      "name": "windows-v143-x86-debug-safe",
+      "displayName": "v143 x86 Debug Safe",
+      "description": "Target Windows with the 32bit v143 compiler (debug, safe)",
+      "inherits": [ "windows", "cl-v143", "x86", "debug" ]
+    },
+    {
+      "name": "windows-v143-x64-release-safe",
+      "displayName": "v143 x64 Release Safe",
+      "description": "Target Windows with the 64bit v143 compiler (release, safe)",
+      "inherits": [ "windows", "cl-v143", "x64", "release" ]
+    },
+    {
+      "name": "windows-v143-x86-release-safe",
+      "displayName": "v143 x86 Release Safe",
+      "description": "Target Windows with the 32bit v143 compiler (release, safe)",
+      "inherits": [ "windows", "cl-v143", "x86", "release" ]
+    },
+    {
+      "name": "windows-clang-cl-x64-debug-safe",
+      "displayName": "clang-cl x64 Debug Safe",
+      "description": "Target Windows with the 64bit Clang-Cl compiler (debug, safe)",
+      "inherits": [ "windows", "clang-cl-19", "x64", "debug", "vendor-clang-cl-x64" ]
+    },    
+    {
+      "name": "windows-clang-cl-x64-debug-safe-coverage",
+      "displayName": "clang-cl x64 Debug Safe Coverage",
+      "description": "Target Windows with the 64bit Clang-Cl compiler (debug, safe)",
+      "inherits": [ "windows", "clang-cl-19", "x64", "debug", "coverage", "vendor-clang-cl-x64" ]
+    },
+    {
+      "name": "windows-clang-cl-x86-debug-safe",
+      "displayName": "clang-cl x86 Debug Safe",
+      "description": "Target Windows with the 32bit Clang-Cl compiler (debug, safe)",
+      "inherits": [ "windows", "clang-cl-19", "x86", "debug", "vendor-clang-cl-x86" ]
+    },
+    {
+      "name": "windows-clang-cl-x64-release-safe",
+      "displayName": "clang-cl x64 Release Safe",
+      "description": "Target Windows with the 64bit Clang-Cl compiler (release, safe)",
+      "inherits": [ "windows", "clang-cl-19", "x64", "release", "vendor-clang-cl-x64" ]
+    },
+    {
+      "name": "windows-clang-cl-x86-release-safe",
+      "displayName": "clang-cl x86 Release Safe",
+      "description": "Target Windows with the 32bit Clang-Cl compiler (release, safe)",
+      "inherits": [ "windows", "clang-cl-19", "x86", "release", "vendor-clang-cl-x86" ]
+    }
+  ]
+}

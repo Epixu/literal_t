@@ -1,0 +1,8 @@
+/out
+/build
+/.vs
+/external
+*.user
+*.bak
+*.hint
+*.TMP
